@@ -209,6 +209,76 @@
             background-color: #e9f5fe;
             border-color: #1a73e8;
         }
+
+        .help-submenu {
+            display: flex;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .help-submenu-item {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .help-submenu-item.active {
+            background-color: #e9f5fe;
+            border-color: #1a73e8;
+        }
+
+        .help-content {
+            display: none;
+        }
+
+        .help-content.active {
+            display: block;
+        }
+
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .section-divider {
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #333;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -348,43 +418,135 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 <p>Correspond aux releases avec encodage H265, HEVC, ou x265</p>
                 <button class="use-example" data-regex=".*\.(H265|HEVC|x265).*">Utiliser cet exemple</button>
             </div>
+
+            <div class="example-item">
+                <h3>Films français en 1080p (2024)</h3>
+                <p><strong>Regex :</strong> <code>1080p.*FR.*2024</code></p>
+                <p>Correspond à : Film.Titre.2024.FRENCH.1080p.BluRay.x264</p>
+                <p>Spécifique pour YGGtorrent et autres trackers francophones</p>
+                <button class="use-example" data-regex="1080p.*FR.*2024">Utiliser cet exemple</button>
+            </div>
         </div>
         
         <div class="tab-content" id="help">
             <h2>Aide Regex pour Autobrr</h2>
-            
-            <p>Autobrr utilise des regex de type Golang. Testez vos modèles sur <a href="https://regex101.com" target="_blank">regex101.com</a> (sélectionnez la saveur Golang).</p>
-            
-            <h3>Motifs Regex courants</h3>
-            <ul>
-                <li><code>.*</code> - Correspond à n'importe quelle séquence de caractères</li>
-                <li><code>\d+</code> - Correspond à un ou plusieurs chiffres</li>
-                <li><code>\w+</code> - Correspond à un ou plusieurs caractères de mot (lettres, chiffres, underscore)</li>
-                <li><code>^</code> - Correspond au début de la chaîne</li>
-                <li><code>$</code> - Correspond à la fin de la chaîne</li>
-                <li><code>|</code> - Opérateur OU (ex : <code>1080p|2160p</code> correspond soit à 1080p soit à 2160p)</li>
-                <li><code>(?!motif)</code> - Anticipation négative (ne correspond pas si le motif suit)</li>
-            </ul>
-            
-            <h3>Conseils spécifiques pour Autobrr</h3>
-            <p>Lors de l'utilisation de regex dans les filtres autobrr :</p>
-            <ul>
-                <li>Utilisez le champ "Match releases" avec votre modèle regex</li>
-                <li>Testez minutieusement avant de mettre en œuvre</li>
-                <li>Utilisez le champ "Except releases" pour les exclusions</li>
-                <li>Pour les modèles complexes, décomposez-les en plusieurs filtres</li>
-            </ul>
 
-            <h3>Utilisation du générateur de médias</h3>
-            <p>Le générateur de médias vous permet de créer des expressions régulières pour des séries, films ou émissions spécifiques :</p>
-            <ul>
-                <li><strong>Titre du média</strong> : Entrez le nom exact de votre série, film ou émission</li>
-                <li><strong>Type de média</strong> : Sélectionnez le type approprié pour des suggestions plus précises</li>
-                <li><strong>Correspondance stricte</strong> : Active pour correspondre exactement au titre (sans variations)</li>
-                <li><strong>Inclure l'année</strong> : Si vous spécifiez une année (ex: Interstellar 2014), inclut cette année dans la regex</li>
-                <li><strong>Inclure qualité</strong> : Ajoute des patterns pour filtrer par qualité (1080p, 720p, etc.)</li>
-                <li><strong>Inclure la saison</strong> : Pour les séries TV, permet de filtrer par saison spécifique</li>
-            </ul>
+            <div class="help-submenu">
+                <div class="help-submenu-item active" data-help="general">Général</div>
+                <div class="help-submenu-item" data-help="generator">Générateur Media</div>
+                <div class="help-submenu-item" data-help="ygg">YGGtorrent</div>
+            </div>
+            
+            <div class="help-content active" id="general-help">
+                <p>Autobrr utilise des regex de type Golang. Testez vos modèles sur <a href="https://regex101.com" target="_blank">regex101.com</a> (sélectionnez la saveur Golang).</p>
+                
+                <h3>Motifs Regex courants</h3>
+                <ul>
+                    <li><code>.*</code> - Correspond à n'importe quelle séquence de caractères</li>
+                    <li><code>\d+</code> - Correspond à un ou plusieurs chiffres</li>
+                    <li><code>\w+</code> - Correspond à un ou plusieurs caractères de mot (lettres, chiffres, underscore)</li>
+                    <li><code>^</code> - Correspond au début de la chaîne</li>
+                    <li><code>$</code> - Correspond à la fin de la chaîne</li>
+                    <li><code>|</code> - Opérateur OU (ex : <code>1080p|2160p</code> correspond soit à 1080p soit à 2160p)</li>
+                    <li><code>(?!motif)</code> - Anticipation négative (ne correspond pas si le motif suit)</li>
+                </ul>
+                
+                <h3>Conseils spécifiques pour Autobrr</h3>
+                <p>Lors de l'utilisation de regex dans les filtres autobrr :</p>
+                <ul>
+                    <li>Utilisez le champ "Match releases" avec votre modèle regex</li>
+                    <li>Testez minutieusement avant de mettre en œuvre</li>
+                    <li>Utilisez le champ "Except releases" pour les exclusions</li>
+                    <li>Pour les modèles complexes, décomposez-les en plusieurs filtres</li>
+                </ul>
+            </div>
+
+            <div class="help-content" id="generator-help">
+                <h3>Utilisation du générateur de médias</h3>
+                <p>Le générateur de médias vous permet de créer des expressions régulières pour des séries, films ou émissions spécifiques :</p>
+                <ul>
+                    <li><strong>Titre du média</strong> : Entrez le nom exact de votre série, film ou émission</li>
+                    <li><strong>Type de média</strong> : Sélectionnez le type approprié pour des suggestions plus précises</li>
+                    <li><strong>Correspondance stricte</strong> : Active pour correspondre exactement au titre (sans variations)</li>
+                    <li><strong>Inclure l'année</strong> : Si vous spécifiez une année (ex: Interstellar 2014), inclut cette année dans la regex</li>
+                    <li><strong>Inclure qualité</strong> : Ajoute des patterns pour filtrer par qualité (1080p, 720p, etc.)</li>
+                    <li><strong>Inclure la saison</strong> : Pour les séries TV, permet de filtrer par saison spécifique</li>
+                </ul>
+            </div>
+
+            <div class="help-content" id="ygg-help">
+                <h3>Regex pour YGGtorrent</h3>
+                
+                <h4>1. Prérequis</h4>
+                <ul>
+                    <li><strong>autobrr</strong> installé et configuré avec votre client de téléchargement (qBittorrent, Deluge, etc.)</li>
+                    <li>YGGtorrent ajouté comme indexer dans autobrr</li>
+                    <li>Connaissances de base en expressions régulières</li>
+                </ul>
+
+                <h4>2. Fonctionnement des filtres et regex dans autobrr</h4>
+                <p>Les filtres d'autobrr permettent de sélectionner précisément quels torrents doivent être envoyés à votre client de téléchargement. Les regex sont particulièrement utiles pour affiner ces critères.</p>
+
+                <p><strong>Champs courants utilisables avec regex :</strong></p>
+                <ul>
+                    <li><code>{{.TorrentName}}</code> : nom du torrent tel qu'annoncé</li>
+                    <li><code>{{.Title}}</code> : titre parsé</li>
+                    <li><code>{{.Resolution}}</code> : résolution (ex : 1080p)</li>
+                    <li><code>{{.Source}}</code> : source (ex : WEB-DL, BluRay)</li>
+                    <li><code>{{.Year}}</code> : année</li>
+                    <li><code>{{.Language}}</code> : langue</li>
+                </ul>
+
+                <h4>3. Particularités de la syntaxe regex dans autobrr</h4>
+                <ul>
+                    <li>Les regex dans autobrr utilisent le moteur Go, enrichi par les fonctions Sprig</li>
+                    <li><strong>Attention :</strong> tout backslash <code>\</code> dans une regex doit être doublé <code>\\</code> (ex : <code>\d</code> devient <code>\\d</code>)</li>
+                    <li>Les fonctions regex sont accessibles via les macros dans les filtres</li>
+                </ul>
+
+                <h4>4. Exemple de filtre regex pour YGGtorrent</h4>
+                <p>Supposons que vous souhaitiez filtrer uniquement les films en 1080p en français, dont le nom contient l'année 2024.</p>
+
+                <div class="code-block">
+                    filters:<br>
+                    &nbsp;&nbsp;- name: "Films FR 1080p 2024"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;enabled: true<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;indexers:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- yggtorrent<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;match_releases:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- field: TorrentName<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex: "1080p.*FR.*2024"
+                </div>
+
+                <p><strong>Explications :</strong></p>
+                <ul>
+                    <li><code>field: TorrentName</code> : cible le nom du torrent</li>
+                    <li><code>regex: "1080p.*FR.*2024"</code> : sélectionne les torrents contenant "1080p", "FR" et "2024" dans le nom</li>
+                </ul>
+
+                <h4>5. Utilisation avancée : Macros et templates</h4>
+                <p>Vous pouvez utiliser les macros pour manipuler dynamiquement les champs avec des regex plus complexes.<br>
+                <strong>Exemple : retirer le numéro d'épisode d'un nom de torrent (utile pour classer les séries) :</strong></p>
+
+                <div class="code-block">
+                    {{- $pattern := "([\\.\s\-\(])([Ss]\d+)[\.\s\-]?([Ee]\d+)?([\.\s\-\)])" -}}<br>
+                    {{- $repl := "${1}${2}${4}" -}}<br>
+                    {{- regexReplaceAll $pattern .TorrentName $repl -}}
+                </div>
+
+                <p>Cela supprime la partie épisode du nom pour n'avoir que la saison, ce qui peut servir à créer des catégories dynamiques ou des chemins de classement personnalisés.</p>
+
+                <h4>6. Conseils spécifiques pour YGGtorrent</h4>
+                <ul>
+                    <li>Analysez la structure typique des noms de torrents sur YGG (ex : <code>[Nom.Film].2024.FRENCH.1080p.BluRay.x264</code>)</li>
+                    <li>Adaptez vos regex pour matcher les conventions de nommage utilisées sur YGG</li>
+                    <li>Testez vos regex sur des exemples de noms de torrents pour éviter les faux positifs/négatifs</li>
+                </ul>
+
+                <div class="section-divider"></div>
+
+                <p><em>Pour toute expression régulière complexe, testez-la d'abord sur un site de test de regex compatible Go, puis doublez les backslashes dans votre configuration autobrr.</em></p>
+            </div>
         </div>
     </div>
 
@@ -427,6 +589,26 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                         content.classList.remove('active');
                     });
                     document.getElementById('builder').classList.add('active');
+                });
+            });
+            
+            // Fonctionnalité pour le sous-menu d'aide
+            const helpSubMenuItems = document.querySelectorAll('.help-submenu-item');
+            helpSubMenuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Supprimer la classe active de tous les éléments du sous-menu
+                    helpSubMenuItems.forEach(i => i.classList.remove('active'));
+                    // Ajouter la classe active à l'élément cliqué
+                    this.classList.add('active');
+                    
+                    // Masquer tout le contenu d'aide
+                    document.querySelectorAll('.help-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Afficher le contenu d'aide sélectionné
+                    const helpId = `${this.getAttribute('data-help')}-help`;
+                    document.getElementById(helpId).classList.add('active');
                 });
             });
             

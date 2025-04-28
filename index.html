@@ -124,6 +124,91 @@
         .tab-content.active {
             display: block;
         }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .toggle-switch label {
+            display: inline;
+            margin-right: 10px;
+            font-weight: normal;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1a73e8;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .copy-button {
+            background-color: #4CAF50;
+            margin-left: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+
+        .generator-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .generator-option {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .generator-option.selected {
+            background-color: #e9f5fe;
+            border-color: #1a73e8;
+        }
     </style>
 </head>
 <body>
@@ -132,6 +217,7 @@
     <div class="container">
         <div class="tabs">
             <div class="tab active" data-tab="builder">Créateur de Regex</div>
+            <div class="tab" data-tab="generator">Générateur Media</div>
             <div class="tab" data-tab="examples">Exemples</div>
             <div class="tab" data-tab="help">Aide</div>
         </div>
@@ -154,6 +240,80 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
             
             <div class="results" id="results">
                 <!-- Les résultats seront affichés ici -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="generator">
+            <h2>Générateur de Regex pour Médias</h2>
+            <p>Entrez le nom d'une série, émission ou film pour générer automatiquement une regex adaptée.</p>
+            
+            <div class="form-group">
+                <label for="media-title">Titre du média :</label>
+                <input type="text" id="media-title" placeholder="Ex: Stranger Things, Game of Thrones, Interstellar...">
+            </div>
+
+            <div class="form-group">
+                <label>Type de média :</label>
+                <div class="generator-options">
+                    <div class="generator-option selected" data-type="all">Tous</div>
+                    <div class="generator-option" data-type="movie">Film</div>
+                    <div class="generator-option" data-type="tv">Série TV</div>
+                    <div class="generator-option" data-type="documentary">Documentaire</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Options supplémentaires :</label>
+                <div class="toggle-switch">
+                    <label for="strict-match">Correspondance stricte</label>
+                    <label class="switch">
+                        <input type="checkbox" id="strict-match">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <label for="year-match">Inclure l'année (si spécifiée)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="year-match" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <label for="quality-match">Inclure qualité (1080p, 720p, etc.)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="quality-match">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-switch">
+                    <label for="season-match">Inclure la saison (pour séries TV)</label>
+                    <label class="switch">
+                        <input type="checkbox" id="season-match">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="season-number">Numéro de saison (optionnel) :</label>
+                <input type="text" id="season-number" placeholder="Ex: 1, 2, etc." disabled>
+            </div>
+
+            <button id="generate-button">Générer Regex</button>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="generated-regex">Regex générée :</label>
+                <div style="display: flex;">
+                    <input type="text" id="generated-regex" readonly>
+                    <button id="copy-button" class="copy-button">Copier</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="explanation">Explication :</label>
+                <div id="explanation" style="padding: 10px; background-color: #f8f9fa; border-radius: 4px; margin-top: 5px;">
+                    <!-- L'explication sera ajoutée ici -->
+                </div>
             </div>
         </div>
         
@@ -214,6 +374,17 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 <li>Utilisez le champ "Except releases" pour les exclusions</li>
                 <li>Pour les modèles complexes, décomposez-les en plusieurs filtres</li>
             </ul>
+
+            <h3>Utilisation du générateur de médias</h3>
+            <p>Le générateur de médias vous permet de créer des expressions régulières pour des séries, films ou émissions spécifiques :</p>
+            <ul>
+                <li><strong>Titre du média</strong> : Entrez le nom exact de votre série, film ou émission</li>
+                <li><strong>Type de média</strong> : Sélectionnez le type approprié pour des suggestions plus précises</li>
+                <li><strong>Correspondance stricte</strong> : Active pour correspondre exactement au titre (sans variations)</li>
+                <li><strong>Inclure l'année</strong> : Si vous spécifiez une année (ex: Interstellar 2014), inclut cette année dans la regex</li>
+                <li><strong>Inclure qualité</strong> : Ajoute des patterns pour filtrer par qualité (1080p, 720p, etc.)</li>
+                <li><strong>Inclure la saison</strong> : Pour les séries TV, permet de filtrer par saison spécifique</li>
+            </ul>
         </div>
     </div>
 
@@ -259,6 +430,122 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 });
             });
             
+            // Fonctionnalité pour le générateur de médias
+            const generateButton = document.getElementById('generate-button');
+            const copyButton = document.getElementById('copy-button');
+            const mediaTypeOptions = document.querySelectorAll('.generator-option');
+            const seasonMatchCheckbox = document.getElementById('season-match');
+            const seasonNumberInput = document.getElementById('season-number');
+
+            // Activer/désactiver le champ de numéro de saison
+            seasonMatchCheckbox.addEventListener('change', function() {
+                seasonNumberInput.disabled = !this.checked;
+            });
+
+            // Sélection du type de média
+            mediaTypeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    mediaTypeOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Génération de regex
+            generateButton.addEventListener('click', function() {
+                const mediaTitle = document.getElementById('media-title').value.trim();
+                if (!mediaTitle) {
+                    alert('Veuillez entrer un titre de média.');
+                    return;
+                }
+
+                // Récupérer les options
+                const mediaType = document.querySelector('.generator-option.selected').getAttribute('data-type');
+                const strictMatch = document.getElementById('strict-match').checked;
+                const yearMatch = document.getElementById('year-match').checked;
+                const qualityMatch = document.getElementById('quality-match').checked;
+                const seasonMatch = document.getElementById('season-match').checked;
+                const seasonNumber = document.getElementById('season-number').value.trim();
+
+                // Extraire le titre et l'année si présente
+                let title = mediaTitle;
+                let year = '';
+
+                const yearMatch1 = mediaTitle.match(/\s*\((\d{4})\)$/);
+                const yearMatch2 = mediaTitle.match(/\s+(\d{4})$/);
+
+                if (yearMatch1) {
+                    title = mediaTitle.replace(yearMatch1[0], '').trim();
+                    year = yearMatch1[1];
+                } else if (yearMatch2) {
+                    title = mediaTitle.replace(yearMatch2[0], '').trim();
+                    year = yearMatch2[1];
+                }
+
+                // Préparer le titre pour la regex
+                const escapedTitle = escapeRegExp(title);
+                
+                // Construire la regex
+                let regexPattern = '';
+                let explanation = '';
+
+                // Remplacer les espaces par ? pour les noms de fichiers
+                const titleWithQuestionMarks = escapedTitle.replace(/\s+/g, '?');
+
+                if (strictMatch) {
+                    // Correspondance stricte - le titre doit être exactement comme spécifié
+                    regexPattern = titleWithQuestionMarks;
+                    explanation = `Cette regex recherche exactement le titre "${title}"`;
+                } else {
+                    // Correspondance plus souple - permet des variations autour du titre
+                    regexPattern = `.*${titleWithQuestionMarks}.*`;
+                    explanation = `Cette regex recherche des fichiers contenant "${title}" n'importe où dans le nom`;
+                }
+
+                // Ajouter l'année si demandé et disponible
+                if (yearMatch && year) {
+                    regexPattern += `.*${year}.*`;
+                    explanation += ` et de l'année ${year}`;
+                }
+
+                // Ajouter des patterns spécifiques selon le type de média
+                if (mediaType === 'tv' || mediaType === 'all') {
+                    if (seasonMatch) {
+                        if (seasonNumber) {
+                            const paddedSeasonNumber = seasonNumber.padStart(2, '0');
+                            regexPattern += `.*S${paddedSeasonNumber}.*`;
+                            explanation += `, spécifiquement pour la saison ${seasonNumber}`;
+                        } else {
+                            regexPattern += `.*S\\d+.*`;
+                            explanation += `, pour n'importe quelle saison`;
+                        }
+                    }
+                }
+
+                // Ajouter des patterns de qualité si demandé
+                if (qualityMatch) {
+                    regexPattern += `.*(1080p|720p|2160p|UHD|4K).*`;
+                    explanation += `, avec les qualités courantes (1080p, 720p, 2160p, UHD, 4K)`;
+                }
+
+                // Afficher la regex générée
+                document.getElementById('generated-regex').value = regexPattern;
+                document.getElementById('explanation').innerText = explanation + '.';
+            });
+
+            // Copier la regex générée
+            copyButton.addEventListener('click', function() {
+                const generatedRegex = document.getElementById('generated-regex');
+                generatedRegex.select();
+                document.execCommand('copy');
+                
+                // Changer temporairement le texte du bouton pour indiquer que la copie a fonctionné
+                const originalText = this.innerText;
+                this.innerText = 'Copié!';
+                setTimeout(() => {
+                    this.innerText = originalText;
+                }, 1500);
+            });
+
             function testRegex() {
                 const regexPattern = document.getElementById('regex').value;
                 const testStrings = document.getElementById('test-strings').value.split('\n');
@@ -288,6 +575,11 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 } catch (error) {
                     resultsDiv.innerHTML += `<p>Erreur dans le modèle regex : ${error.message}</p>`;
                 }
+            }
+
+            // Fonction utilitaire pour échapper les caractères spéciaux dans les regex
+            function escapeRegExp(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             }
         });
     </script>

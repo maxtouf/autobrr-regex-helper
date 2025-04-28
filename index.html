@@ -4,282 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistant Regex pour Autobrr</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        h1 {
-            color: #1a73e8;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        textarea, input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-            box-sizing: border-box;
-        }
-        
-        textarea {
-            height: 150px;
-            resize: vertical;
-        }
-        
-        button {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        button:hover {
-            background-color: #1557b0;
-        }
-        
-        .results {
-            margin-top: 20px;
-        }
-        
-        .match-item {
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-        }
-        
-        .match {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .no-match {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .examples {
-            margin-top: 30px;
-        }
-        
-        .example-item {
-            background-color: #e9f5fe;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #1a73e8;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            background-color: #eee;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 4px 4px 0 0;
-            margin-right: 5px;
-        }
-        
-        .tab.active {
-            background-color: white;
-            border-bottom: 1px solid white;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-
-        .toggle-switch {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .toggle-switch label {
-            display: inline;
-            margin-right: 10px;
-            font-weight: normal;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #1a73e8;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .copy-button {
-            background-color: #4CAF50;
-            margin-left: 10px;
-        }
-
-        .copy-button:hover {
-            background-color: #45a049;
-        }
-
-        .generator-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .generator-option {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .generator-option.selected {
-            background-color: #e9f5fe;
-            border-color: #1a73e8;
-        }
-
-        .help-submenu {
-            display: flex;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .help-submenu-item {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .help-submenu-item.active {
-            background-color: #e9f5fe;
-            border-color: #1a73e8;
-        }
-
-        .help-content {
-            display: none;
-        }
-
-        .help-content.active {
-            display: block;
-        }
-
-        .code-block {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            font-family: monospace;
-            overflow-x: auto;
-        }
-
-        .section-divider {
-            border-top: 1px solid #ddd;
-            margin: 30px 0;
-        }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted #333;
-            cursor: help;
-        }
-
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Assistant Regex pour Autobrr</h1>
@@ -288,6 +13,7 @@
         <div class="tabs">
             <div class="tab active" data-tab="builder">Créateur de Regex</div>
             <div class="tab" data-tab="generator">Générateur Media</div>
+            <div class="tab" data-tab="macros">Macros</div>
             <div class="tab" data-tab="examples">Exemples</div>
             <div class="tab" data-tab="help">Aide</div>
         </div>
@@ -386,6 +112,98 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 </div>
             </div>
         </div>
+
+        <div class="tab-content" id="macros">
+            <h2>Créateur de Macros Autobrr</h2>
+            <p>Créez et testez des macros pour étendre les fonctionnalités d'autobrr, comme les catégories dynamiques ou les règles de nommage personnalisées.</p>
+
+            <div class="flex-container">
+                <div class="flex-column">
+                    <div class="form-group">
+                        <label for="macro-type">Type de macro :</label>
+                        <select id="macro-type" class="select-dropdown">
+                            <option value="category">Catégorie dynamique</option>
+                            <option value="filename">Nom de fichier personnalisé</option>
+                            <option value="saveFolder">Dossier d'enregistrement</option>
+                            <option value="tags">Tags dynamiques</option>
+                            <option value="custom">Personnalisée</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Templates de macros :</label>
+                        <div class="macro-template" data-template="movies-{{ .Resolution }}">
+                            <strong>Catégorie par résolution :</strong> <code>movies-{{ .Resolution }}</code>
+                            <p>Crée des catégories comme movies-1080p, movies-2160p</p>
+                        </div>
+                        <div class="macro-template" data-template="movies-{{ .Resolution }}{{ if .HDR }}-{{ .HDR }}{{ end }}">
+                            <strong>Catégorie avec HDR/DV :</strong> <code>movies-{{ .Resolution }}{{ if .HDR }}-{{ .HDR }}{{ end }}</code>
+                            <p>Inclut le type HDR dans la catégorie s'il est présent</p>
+                        </div>
+                        <div class="macro-template" data-template="{{ .Indexer }}">
+                            <strong>Tag par indexer :</strong> <code>{{ .Indexer }}</code>
+                            <p>Ajoute l'indexer comme tag</p>
+                        </div>
+                        <div class="macro-template" data-template="{{ .CurrentYear }}/{{ .CurrentMonth | printf \"%02d\"}}">
+                            <strong>Chemin avec date :</strong> <code>{{ .CurrentYear }}/{{ .CurrentMonth | printf \"%02d\"}}</code>
+                            <p>Crée un chemin avec l'année et le mois actuels</p>
+                        </div>
+                        <div class="macro-template" data-template="{{- $pattern := \"([\\\\.\\s\\-\\(])([Ss]\\d+)[\\\\.\\s\\-]?([Ee]\\d+)?([\\\\.\s\\-\\)])\" -}}&#10;{{- $repl := \"${1}${2}${4}\" -}}&#10;{{- regexReplaceAll $pattern .TorrentName $repl -}}">
+                            <strong>Retirer épisode du nom :</strong> <code>Macro regex complexe (cliquer pour voir)</code>
+                            <p>Supprime le numéro d'épisode mais garde la saison</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Variables disponibles :</label>
+                        <div class="variables-list">
+                            <div class="variable-item" data-var="{{ .TorrentName }}">{{ .TorrentName }} - Nom du torrent</div>
+                            <div class="variable-item" data-var="{{ .Title }}">{{ .Title }} - Titre parsé</div>
+                            <div class="variable-item" data-var="{{ .Resolution }}">{{ .Resolution }} - Résolution (ex: 1080p)</div>
+                            <div class="variable-item" data-var="{{ .Source }}">{{ .Source }} - Source (BluRay, WEB-DL, etc.)</div>
+                            <div class="variable-item" data-var="{{ .Year }}">{{ .Year }} - Année du média</div>
+                            <div class="variable-item" data-var="{{ .Season }}">{{ .Season }} - Numéro de saison</div>
+                            <div class="variable-item" data-var="{{ .Episode }}">{{ .Episode }} - Numéro d'épisode</div>
+                            <div class="variable-item" data-var="{{ .Group }}">{{ .Group }} - Groupe de release</div>
+                            <div class="variable-item" data-var="{{ .Codec }}">{{ .Codec }} - Codec vidéo</div>
+                            <div class="variable-item" data-var="{{ .Audio }}">{{ .Audio }} - Format audio</div>
+                            <div class="variable-item" data-var="{{ .HDR }}">{{ .HDR }} - Type HDR (HDR, DV, etc.)</div>
+                            <div class="variable-item" data-var="{{ .Language }}">{{ .Language }} - Langue</div>
+                            <div class="variable-item" data-var="{{ .Indexer }}">{{ .Indexer }} - Indexer utilisé</div>
+                            <div class="variable-item" data-var="{{ .CurrentYear }}">{{ .CurrentYear }} - Année actuelle</div>
+                            <div class="variable-item" data-var="{{ .CurrentMonth }}">{{ .CurrentMonth }} - Mois actuel</div>
+                            <div class="variable-item" data-var="{{ .CurrentDay }}">{{ .CurrentDay }} - Jour actuel</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-column">
+                    <div class="form-group">
+                        <label for="macro-editor">Éditeur de macro :</label>
+                        <textarea id="macro-editor" placeholder="Entrez votre macro ici... Cliquez sur un template à gauche pour l'insérer."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="test-macro-button">Tester la macro</button>
+                    </div>
+
+                    <div id="macro-result">
+                        <!-- Le résultat du test de la macro sera affiché ici -->
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <h3>Aide rapide sur les macros</h3>
+                        <ul>
+                            <li>Utilisez <code>{{ .Variable }}</code> pour insérer une variable</li>
+                            <li>Utilisez <code>{{ .Variable | function }}</code> pour appliquer une fonction</li>
+                            <li>Utilisez <code>{{ if condition }}...{{ end }}</code> pour une condition</li>
+                            <li>Pour les regex, doublez chaque backslash: <code>\\d</code> au lieu de <code>\d</code></li>
+                            <li>Utilisez <code>{{ .CurrentMonth | printf "%02d"}}</code> pour formater un nombre avec des zéros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="tab-content" id="examples">
             <h2>Exemples courants de Regex pour Autobrr</h2>
@@ -434,6 +252,7 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
             <div class="help-submenu">
                 <div class="help-submenu-item active" data-help="general">Général</div>
                 <div class="help-submenu-item" data-help="generator">Générateur Media</div>
+                <div class="help-submenu-item" data-help="macros">Macros</div>
                 <div class="help-submenu-item" data-help="ygg">YGGtorrent</div>
             </div>
             
@@ -474,6 +293,86 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 </ul>
             </div>
 
+            <div class="help-content" id="macros-help">
+                <h3>Comprendre les macros Autobrr</h3>
+                
+                <p>Les macros sont un excellent moyen d'améliorer votre flux de travail en ajoutant une logique personnalisée au traitement des données fournies par autobrr. Les macros sont prises en charge dans les champs des Filtres, Actions et Filtres externes.</p>
+                
+                <h4>1. Fonctionnement des macros</h4>
+                <p>Les macros sont basées sur le moteur de templates Go, enrichi par les fonctions Sprig. Ce système permet d'effectuer des opérations, des évaluations et de manipuler des valeurs au niveau de la configuration utilisateur.</p>
+                
+                <p><strong>Attention :</strong> Tout RegEx contenant une barre oblique inverse doit être échappé deux fois. Par exemple, <code>\d</code> devient <code>\\d</code>.</p>
+                
+                <h4>2. Exemples d'utilisation</h4>
+                
+                <div class="code-block">
+                    <!-- Catégorie dynamique par résolution -->
+                    Catégorie: movies-{{ .Resolution }}
+                    <!-- Résultat: movies-1080p, movies-2160p -->
+                    
+                    <!-- Tags dynamiques -->
+                    Tags: {{ .Indexer }}
+                    <!-- Résultat: yggtorrent -->
+                    
+                    <!-- Chemin dynamique avec date -->
+                    Chemin: {{ .CurrentYear }}/{{ .CurrentMonth | printf "%02d"}}
+                    <!-- Résultat: 2024/04 -->
+                    
+                    <!-- Catégorie avec HDR -->
+                    Catégorie: movies-{{ .Resolution }}{{ if .HDR }}-{{ .HDR }}{{ end }}
+                    <!-- Résultat: movies-1080p-HDR, movies-2160p-DV -->
+                </div>
+                
+                <h4>3. Variables disponibles</h4>
+                <p>Autobrr fournit de nombreuses variables que vous pouvez utiliser dans vos macros, selon les informations disponibles pour chaque torrent :</p>
+                
+                <div class="tab-subcontent">
+                    <h5>Variables générales</h5>
+                    <ul>
+                        <li><code>{{ .TorrentName }}</code> - Nom du torrent tel qu'annoncé</li>
+                        <li><code>{{ .Title }}</code> - Titre parsé (ex: That Movie)</li>
+                        <li><code>{{ .Year }}</code> - Année parsée</li>
+                        <li><code>{{ .Resolution }}</code> - Résolution (ex: 1080p)</li>
+                        <li><code>{{ .Source }}</code> - Source (ex: BluRay, WEB-DL)</li>
+                        <li><code>{{ .Indexer }}</code> - Identifiant de l'indexer</li>
+                    </ul>
+                </div>
+                
+                <div class="tab-subcontent">
+                    <h5>Variables TV</h5>
+                    <ul>
+                        <li><code>{{ .Season }}</code> - Saison parsée</li>
+                        <li><code>{{ .Episode }}</code> - Épisode parsé</li>
+                    </ul>
+                </div>
+                
+                <div class="tab-subcontent">
+                    <h5>Variables date et temps</h5>
+                    <ul>
+                        <li><code>{{ .CurrentYear }}</code> - Année courante</li>
+                        <li><code>{{ .CurrentMonth }}</code> - Mois courant</li>
+                        <li><code>{{ .CurrentDay }}</code> - Jour courant</li>
+                        <li><code>{{ .CurrentHour }}</code> - Heure courante</li>
+                        <li><code>{{ .CurrentMinute }}</code> - Minute courante</li>
+                    </ul>
+                </div>
+                
+                <h4>4. Opérations avancées</h4>
+                <p>Voici un exemple de macro avancée qui retire le numéro d'épisode d'un nom de torrent, mais conserve le numéro de saison :</p>
+                
+                <div class="code-block">
+                    {{- $pattern := "([\\.\s\\-\\(])([Ss]\\d+)[\\.\s\\-]?([Ee]\\d+)?([\\.\s\\-\\)])" -}}
+                    {{- $repl := "${1}${2}${4}" -}}
+                    {{- regexReplaceAll $pattern .TorrentName $repl -}}
+                </div>
+                
+                <p>Cette macro transforme par exemple "Show.Name.S01E05.1080p.WEB.x264" en "Show.Name.S01.1080p.WEB.x264", ce qui peut être utile pour créer des dossiers organisés par saison.</p>
+                
+                <div class="section-divider"></div>
+                
+                <p>Pour plus d'informations, consultez la <a href="https://autobrr.com/filters/macros" target="_blank">documentation officielle des macros autobrr</a>.</p>
+            </div>
+
             <div class="help-content" id="ygg-help">
                 <h3>Regex pour YGGtorrent</h3>
                 
@@ -508,13 +407,13 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 <p>Supposons que vous souhaitiez filtrer uniquement les films en 1080p en français, dont le nom contient l'année 2024.</p>
 
                 <div class="code-block">
-                    filters:<br>
-                    &nbsp;&nbsp;- name: "Films FR 1080p 2024"<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;enabled: true<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;indexers:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- yggtorrent<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;match_releases:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- field: TorrentName<br>
+                    filters:
+                    &nbsp;&nbsp;- name: "Films FR 1080p 2024"
+                    &nbsp;&nbsp;&nbsp;&nbsp;enabled: true
+                    &nbsp;&nbsp;&nbsp;&nbsp;indexers:
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- yggtorrent
+                    &nbsp;&nbsp;&nbsp;&nbsp;match_releases:
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- field: TorrentName
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex: "1080p.*FR.*2024"
                 </div>
 
@@ -529,8 +428,8 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
                 <strong>Exemple : retirer le numéro d'épisode d'un nom de torrent (utile pour classer les séries) :</strong></p>
 
                 <div class="code-block">
-                    {{- $pattern := "([\\.\s\-\(])([Ss]\d+)[\.\s\-]?([Ee]\d+)?([\.\s\-\)])" -}}<br>
-                    {{- $repl := "${1}${2}${4}" -}}<br>
+                    {{- $pattern := "([\\.\s\-\(])([Ss]\d+)[\.\s\-]?([Ee]\d+)?([\.\s\-\)])" -}}
+                    {{- $repl := "${1}${2}${4}" -}}
                     {{- regexReplaceAll $pattern .TorrentName $repl -}}
                 </div>
 
@@ -550,220 +449,6 @@ Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fonctionnalité de changement d'onglet
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Supprimer la classe active de tous les onglets
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // Ajouter la classe active à l'onglet cliqué
-                    this.classList.add('active');
-                    
-                    // Masquer tout le contenu des onglets
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Afficher le contenu de l'onglet sélectionné
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // Fonctionnalité de test de regex
-            document.getElementById('test-button').addEventListener('click', testRegex);
-            
-            // Utilisation d'exemples
-            document.querySelectorAll('.use-example').forEach(button => {
-                button.addEventListener('click', function() {
-                    const regex = this.getAttribute('data-regex');
-                    document.getElementById('regex').value = regex;
-                    
-                    // Basculer vers l'onglet créateur
-                    tabs.forEach(t => t.classList.remove('active'));
-                    document.querySelector('[data-tab="builder"]').classList.add('active');
-                    
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById('builder').classList.add('active');
-                });
-            });
-            
-            // Fonctionnalité pour le sous-menu d'aide
-            const helpSubMenuItems = document.querySelectorAll('.help-submenu-item');
-            helpSubMenuItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // Supprimer la classe active de tous les éléments du sous-menu
-                    helpSubMenuItems.forEach(i => i.classList.remove('active'));
-                    // Ajouter la classe active à l'élément cliqué
-                    this.classList.add('active');
-                    
-                    // Masquer tout le contenu d'aide
-                    document.querySelectorAll('.help-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Afficher le contenu d'aide sélectionné
-                    const helpId = `${this.getAttribute('data-help')}-help`;
-                    document.getElementById(helpId).classList.add('active');
-                });
-            });
-            
-            // Fonctionnalité pour le générateur de médias
-            const generateButton = document.getElementById('generate-button');
-            const copyButton = document.getElementById('copy-button');
-            const mediaTypeOptions = document.querySelectorAll('.generator-option');
-            const seasonMatchCheckbox = document.getElementById('season-match');
-            const seasonNumberInput = document.getElementById('season-number');
-
-            // Activer/désactiver le champ de numéro de saison
-            seasonMatchCheckbox.addEventListener('change', function() {
-                seasonNumberInput.disabled = !this.checked;
-            });
-
-            // Sélection du type de média
-            mediaTypeOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    mediaTypeOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-
-            // Génération de regex
-            generateButton.addEventListener('click', function() {
-                const mediaTitle = document.getElementById('media-title').value.trim();
-                if (!mediaTitle) {
-                    alert('Veuillez entrer un titre de média.');
-                    return;
-                }
-
-                // Récupérer les options
-                const mediaType = document.querySelector('.generator-option.selected').getAttribute('data-type');
-                const strictMatch = document.getElementById('strict-match').checked;
-                const yearMatch = document.getElementById('year-match').checked;
-                const qualityMatch = document.getElementById('quality-match').checked;
-                const seasonMatch = document.getElementById('season-match').checked;
-                const seasonNumber = document.getElementById('season-number').value.trim();
-
-                // Extraire le titre et l'année si présente
-                let title = mediaTitle;
-                let year = '';
-
-                const yearMatch1 = mediaTitle.match(/\s*\((\d{4})\)$/);
-                const yearMatch2 = mediaTitle.match(/\s+(\d{4})$/);
-
-                if (yearMatch1) {
-                    title = mediaTitle.replace(yearMatch1[0], '').trim();
-                    year = yearMatch1[1];
-                } else if (yearMatch2) {
-                    title = mediaTitle.replace(yearMatch2[0], '').trim();
-                    year = yearMatch2[1];
-                }
-
-                // Préparer le titre pour la regex
-                const escapedTitle = escapeRegExp(title);
-                
-                // Construire la regex
-                let regexPattern = '';
-                let explanation = '';
-
-                // Remplacer les espaces par ? pour les noms de fichiers
-                const titleWithQuestionMarks = escapedTitle.replace(/\s+/g, '?');
-
-                if (strictMatch) {
-                    // Correspondance stricte - le titre doit être exactement comme spécifié
-                    regexPattern = titleWithQuestionMarks;
-                    explanation = `Cette regex recherche exactement le titre "${title}"`;
-                } else {
-                    // Correspondance plus souple - permet des variations autour du titre
-                    regexPattern = `.*${titleWithQuestionMarks}.*`;
-                    explanation = `Cette regex recherche des fichiers contenant "${title}" n'importe où dans le nom`;
-                }
-
-                // Ajouter l'année si demandé et disponible
-                if (yearMatch && year) {
-                    regexPattern += `.*${year}.*`;
-                    explanation += ` et de l'année ${year}`;
-                }
-
-                // Ajouter des patterns spécifiques selon le type de média
-                if (mediaType === 'tv' || mediaType === 'all') {
-                    if (seasonMatch) {
-                        if (seasonNumber) {
-                            const paddedSeasonNumber = seasonNumber.padStart(2, '0');
-                            regexPattern += `.*S${paddedSeasonNumber}.*`;
-                            explanation += `, spécifiquement pour la saison ${seasonNumber}`;
-                        } else {
-                            regexPattern += `.*S\\d+.*`;
-                            explanation += `, pour n'importe quelle saison`;
-                        }
-                    }
-                }
-
-                // Ajouter des patterns de qualité si demandé
-                if (qualityMatch) {
-                    regexPattern += `.*(1080p|720p|2160p|UHD|4K).*`;
-                    explanation += `, avec les qualités courantes (1080p, 720p, 2160p, UHD, 4K)`;
-                }
-
-                // Afficher la regex générée
-                document.getElementById('generated-regex').value = regexPattern;
-                document.getElementById('explanation').innerText = explanation + '.';
-            });
-
-            // Copier la regex générée
-            copyButton.addEventListener('click', function() {
-                const generatedRegex = document.getElementById('generated-regex');
-                generatedRegex.select();
-                document.execCommand('copy');
-                
-                // Changer temporairement le texte du bouton pour indiquer que la copie a fonctionné
-                const originalText = this.innerText;
-                this.innerText = 'Copié!';
-                setTimeout(() => {
-                    this.innerText = originalText;
-                }, 1500);
-            });
-
-            function testRegex() {
-                const regexPattern = document.getElementById('regex').value;
-                const testStrings = document.getElementById('test-strings').value.split('\n');
-                const resultsDiv = document.getElementById('results');
-                
-                resultsDiv.innerHTML = '<h3>Résultats :</h3>';
-                
-                if (!regexPattern) {
-                    resultsDiv.innerHTML += '<p>Veuillez entrer un modèle regex.</p>';
-                    return;
-                }
-                
-                try {
-                    const regex = new RegExp(regexPattern);
-                    
-                    testStrings.forEach(string => {
-                        if (!string.trim()) return; // Ignorer les lignes vides
-                        
-                        const matches = regex.test(string);
-                        const resultItem = document.createElement('div');
-                        resultItem.className = `match-item ${matches ? 'match' : 'no-match'}`;
-                        resultItem.innerHTML = `
-                            <strong>${string}</strong>: ${matches ? 'CORRESPOND' : 'NE CORRESPOND PAS'}
-                        `;
-                        resultsDiv.appendChild(resultItem);
-                    });
-                } catch (error) {
-                    resultsDiv.innerHTML += `<p>Erreur dans le modèle regex : ${error.message}</p>`;
-                }
-            }
-
-            // Fonction utilitaire pour échapper les caractères spéciaux dans les regex
-            function escapeRegExp(string) {
-                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-        });
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>

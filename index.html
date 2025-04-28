@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Regex pour Autobrr</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #1557b0;
+        }
+        
+        .results {
+            margin-top: 20px;
+        }
+        
+        .match-item {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        
+        .match {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .no-match {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .examples {
+            margin-top: 30px;
+        }
+        
+        .example-item {
+            background-color: #e9f5fe;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #1a73e8;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Assistant Regex pour Autobrr</h1>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="builder">Créateur de Regex</div>
+            <div class="tab" data-tab="examples">Exemples</div>
+            <div class="tab" data-tab="help">Aide</div>
+        </div>
+        
+        <div class="tab-content active" id="builder">
+            <div class="form-group">
+                <label for="regex">Modèle Regex :</label>
+                <input type="text" id="regex" placeholder="Entrez votre modèle regex (ex: .*Film.*1080p.*)">
+            </div>
+            
+            <div class="form-group">
+                <label for="test-strings">Chaînes de test (une par ligne) :</label>
+                <textarea id="test-strings" placeholder="Entrez vos chaînes de test ici, une par ligne
+Par exemple :
+Super.Film.2023.1080p.BluRay.x264-GROUPE
+Autre.Film.2023.720p.WEB.x264-RELEASE"></textarea>
+            </div>
+            
+            <button id="test-button">Tester Regex</button>
+            
+            <div class="results" id="results">
+                <!-- Les résultats seront affichés ici -->
+            </div>
+        </div>
+        
+        <div class="tab-content" id="examples">
+            <h2>Exemples courants de Regex pour Autobrr</h2>
+            
+            <div class="example-item">
+                <h3>Films (uniquement 1080p BluRay)</h3>
+                <p><strong>Regex :</strong> <code>.*\.(1080p)\.BluRay\..*</code></p>
+                <p>Correspond à : Film.Titre.2023.1080p.BluRay.x264-GROUPE</p>
+                <p>Ne correspond pas à : Film.Titre.2023.1080p.WEB.x264-GROUPE</p>
+                <button class="use-example" data-regex=".*\.(1080p)\.BluRay\..*">Utiliser cet exemple</button>
+            </div>
+            
+            <div class="example-item">
+                <h3>Pack de saison pour série TV</h3>
+                <p><strong>Regex :</strong> <code>.*S\d+.*COMPLETE.*</code></p>
+                <p>Correspond à : Nom.Serie.S01.COMPLETE.1080p.WEB.x264-GROUPE</p>
+                <button class="use-example" data-regex=".*S\d+.*COMPLETE.*">Utiliser cet exemple</button>
+            </div>
+            
+            <div class="example-item">
+                <h3>Exclure un groupe de release spécifique</h3>
+                <p><strong>Regex :</strong> <code>^(?!.*-MAUVAIS_GROUPE).*$</code></p>
+                <p>Correspond à tout ce qui ne vient PAS de MAUVAIS_GROUPE</p>
+                <button class="use-example" data-regex="^(?!.*-MAUVAIS_GROUPE).*$">Utiliser cet exemple</button>
+            </div>
+            
+            <div class="example-item">
+                <h3>Correspondre uniquement aux H265/HEVC</h3>
+                <p><strong>Regex :</strong> <code>.*\.(H265|HEVC|x265).*</code></p>
+                <p>Correspond aux releases avec encodage H265, HEVC, ou x265</p>
+                <button class="use-example" data-regex=".*\.(H265|HEVC|x265).*">Utiliser cet exemple</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="help">
+            <h2>Aide Regex pour Autobrr</h2>
+            
+            <p>Autobrr utilise des regex de type Golang. Testez vos modèles sur <a href="https://regex101.com" target="_blank">regex101.com</a> (sélectionnez la saveur Golang).</p>
+            
+            <h3>Motifs Regex courants</h3>
+            <ul>
+                <li><code>.*</code> - Correspond à n'importe quelle séquence de caractères</li>
+                <li><code>\d+</code> - Correspond à un ou plusieurs chiffres</li>
+                <li><code>\w+</code> - Correspond à un ou plusieurs caractères de mot (lettres, chiffres, underscore)</li>
+                <li><code>^</code> - Correspond au début de la chaîne</li>
+                <li><code>$</code> - Correspond à la fin de la chaîne</li>
+                <li><code>|</code> - Opérateur OU (ex : <code>1080p|2160p</code> correspond soit à 1080p soit à 2160p)</li>
+                <li><code>(?!motif)</code> - Anticipation négative (ne correspond pas si le motif suit)</li>
+            </ul>
+            
+            <h3>Conseils spécifiques pour Autobrr</h3>
+            <p>Lors de l'utilisation de regex dans les filtres autobrr :</p>
+            <ul>
+                <li>Utilisez le champ "Match releases" avec votre modèle regex</li>
+                <li>Testez minutieusement avant de mettre en œuvre</li>
+                <li>Utilisez le champ "Except releases" pour les exclusions</li>
+                <li>Pour les modèles complexes, décomposez-les en plusieurs filtres</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fonctionnalité de changement d'onglet
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Supprimer la classe active de tous les onglets
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Ajouter la classe active à l'onglet cliqué
+                    this.classList.add('active');
+                    
+                    // Masquer tout le contenu des onglets
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Afficher le contenu de l'onglet sélectionné
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Fonctionnalité de test de regex
+            document.getElementById('test-button').addEventListener('click', testRegex);
+            
+            // Utilisation d'exemples
+            document.querySelectorAll('.use-example').forEach(button => {
+                button.addEventListener('click', function() {
+                    const regex = this.getAttribute('data-regex');
+                    document.getElementById('regex').value = regex;
+                    
+                    // Basculer vers l'onglet créateur
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelector('[data-tab="builder"]').classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById('builder').classList.add('active');
+                });
+            });
+            
+            function testRegex() {
+                const regexPattern = document.getElementById('regex').value;
+                const testStrings = document.getElementById('test-strings').value.split('\n');
+                const resultsDiv = document.getElementById('results');
+                
+                resultsDiv.innerHTML = '<h3>Résultats :</h3>';
+                
+                if (!regexPattern) {
+                    resultsDiv.innerHTML += '<p>Veuillez entrer un modèle regex.</p>';
+                    return;
+                }
+                
+                try {
+                    const regex = new RegExp(regexPattern);
+                    
+                    testStrings.forEach(string => {
+                        if (!string.trim()) return; // Ignorer les lignes vides
+                        
+                        const matches = regex.test(string);
+                        const resultItem = document.createElement('div');
+                        resultItem.className = `match-item ${matches ? 'match' : 'no-match'}`;
+                        resultItem.innerHTML = `
+                            <strong>${string}</strong>: ${matches ? 'CORRESPOND' : 'NE CORRESPOND PAS'}
+                        `;
+                        resultsDiv.appendChild(resultItem);
+                    });
+                } catch (error) {
+                    resultsDiv.innerHTML += `<p>Erreur dans le modèle regex : ${error.message}</p>`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
